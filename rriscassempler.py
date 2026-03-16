@@ -98,7 +98,9 @@ def find_labels(lines):
         if not ((tokens := line2tokens(line)) == -1):
             if tokens[0] == "L:":
                 labels[tokens[1]] = pc
-        pc += 1
+                if debug: print(f"label {tokens[1]} at {pc}")
+            else:
+                pc += 1
 
 
 pc = 0
@@ -109,11 +111,11 @@ def line2instruction(line):
 
     if (tokens := line2tokens(line)) == -1: return -1
 
-    pc += 1
-
     # label
     if tokens[0] == "L:":
         return -1
+
+    pc += 1
 
     if tokens[0] == "nop": return instruction("nop")
 
@@ -151,7 +153,7 @@ def line2instruction(line):
     # immRD
     elif tokens[0] == "j":
         if tokens[1].startswith("L"):
-            return instruction("j", imm=labels[tokens[1][1:]]-pc+1, immRD=True)
+            return instruction("j", imm=labels[tokens[1][1:]]-pc, immRD=True)
         return instruction("j", imm=tokens[1], immRD=True)
 
     # rs1
@@ -161,14 +163,15 @@ def line2instruction(line):
     # rs1, rs2, immRD
     elif tokens[0] in ["beq", "bne", "blt", "bgt", "bge", "ble"]:
         if tokens[3].startswith("L"):
-            return instruction(tokens[0], rs1=tokens[1], rs2=tokens[2], imm=labels[tokens[3][1:]]-pc+1, immRD=True)
+            if debug: print(f"branch to label {tokens[3][1:]} at {pc} offset {labels[tokens[3][1:]]-pc}")
+            return instruction(tokens[0], rs1=tokens[1], rs2=tokens[2], imm=labels[tokens[3][1:]]-pc, immRD=True)
         return instruction(tokens[0], rs1=tokens[1], rs2=tokens[2], imm=tokens[3], immRD=True)
 
     print("could not find instruction " + tokens[0]) 
     pc -= 1
 
 if __name__ == "__main__":
-    with open("rriscfibandmove.txt") as f:
+    with open("rrisctests.txt") as f:
         lines = f.readlines()
         find_labels(lines)
         for line in lines:
