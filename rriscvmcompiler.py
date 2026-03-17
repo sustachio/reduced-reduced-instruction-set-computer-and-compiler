@@ -94,6 +94,7 @@ class CodeWritter:
     def __init__(self):
         self.assembly_instructions = []
         self.pc = 0
+        self.current_file = "haiii"
 
         self.WriteBootstrap()
 
@@ -137,28 +138,32 @@ class CodeWritter:
         self.add_asm(f"# {command} {segment} {index}")
         address = ""
 
+
         # fixed fields
         if segment == "result":
             address = f"{index}(x0)"
-        if segment == "static":
+        elif segment == "static":
             self.add_asm("li x3,16")
             address = f"{index}(x3)"
-        if segment == "temp":
+        elif segment == "temp":
             self.add_asm("li x3,5")
             address = f"{index}(x3)"
-        if segment == "pointer":
+        elif segment == "pointer":
             self.add_asm("li x3,3")
             address = f"{index}(x3)"
 
         # frame fields
-        if segment == "local":
+        elif segment == "local":
             address = f"{index}(x{LCL})"
-        if segment == "argument":
+        elif segment == "argument":
             address = f"{index}(x{ARG})"
-        if segment == "this":
+        elif segment == "this":
             address = f"{index}(x{THIS})"
-        if segment == "that":
+        elif segment == "that":
             address = f"{index}(x{THAT})"
+        elif segment == "constant": pass
+        else:
+            print(f"weewooweewoo can't find adress to push/pop for segment {segment}")
 
         if command == "push":
             if segment == "constant":
@@ -178,23 +183,54 @@ class CodeWritter:
 
             self.add_asm(f"addi x{SP},x{SP},-1")
 
+    def WriteLabel(self, name):
+        self.add_asm(f"# label {name}")
+        self.add_asm(f"L: lab{self.current_file}_{name}")
+
+    def WriteGoto(self, name):
+        self.add_asm(f"# goto {name}")
+        self.add_asm(f"j Llab{self.current_file}_{name}")
+        self.add_asm("nop")
+        self.add_asm("nop")
+        self.add_asm("nop")
+
+    def WriteIfGoto(self, name):
+        self.add_asm(f"# goto {name}")
+        self.add_asm(f"lw x2,-1({SP})")
+        self.add_asm(f"addi {SP},{SP},-1")
+        self.add_asm(f"li x3,-1")
+        self.add_asm(f"beq x2,x3,Llab{self.current_file}_{name}")
+        self.add_asm("nop")
+        self.add_asm("nop")
+        self.add_asm("nop")
+
 class VMTranslator:
     def __init__(self, file):
         with open(file) as f:
             self.parser = Parser(f.readlines())
             self.codewriter = CodeWritter()
 
-    def translate_and_print(self):
+    def translate(self):
         while self.parser.has_more_lines():
             self.parser.advance()
 
             if (self.parser.command_type() == self.parser.C_MATH):
                 self.codewriter.WriteMath(self.parser.arg1())
-            if (self.parser.command_type() == self.parser.C_PUSH):
+            elif (self.parser.command_type() == self.parser.C_PUSH):
                 self.codewriter.WritePushPop("push", self.parser.arg1(), self.parser.arg2())
-            if (self.parser.command_type() == self.parser.C_POP):
+            elif (self.parser.command_type() == self.parser.C_POP):
                 self.codewriter.WritePushPop("pop", self.parser.arg1(), self.parser.arg2())
+            elif (self.parser.command_type() == self.parser.C_GOTO):
+                self.codewriter.WriteGoto(self.parser.arg1())
+            elif (self.parser.command_type() == self.parser.C_IF_GOTO):
+                self.codewriter.WriteIfGoto(self.parser.arg1())
+            elif (self.parser.command_type() == self.parser.C_LABEL):
+                self.codewriter.WriteLabel(self.parser.arg1())
+            else:
+                print(f"byte code instruction {self.parser.current_instruction} not found")
 
+
+    def print_output(self):
         print("assembly:")
         for i in self.codewriter.assembly_instructions:
             print("\t"+i)
@@ -204,7 +240,7 @@ class VMTranslator:
         for i in a.assemble():
             print(i,end=" ")
 
-    def translate(self):
+    def output(self):
         res = ""
         a = Assembler(self.codewriter.assembly_instructions)
         for i in a.assemble():
@@ -213,10 +249,11 @@ class VMTranslator:
         return res
 
 a = VMTranslator("rrisclangtest.txt")
-a.translate_and_print()
+a.translate()
+a.print_output()
 
 with open("PROGRAM.txt", "w") as f:
-    f.write(a.translate())
+    f.write(a.output())
 
 
 

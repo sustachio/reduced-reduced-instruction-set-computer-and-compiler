@@ -57,12 +57,6 @@ class Assembler:
         rd, rs1, rs2 = self.parse_registers(rd, rs1, rs2)
         imm = int(imm)
 
-        if debug:
-            print(f"\trd {rd}")
-            print(f"\trs2 {rs2}")
-            print(f"\trs1 {rs1}")
-            print(f"\timm {imm}")
-
         op  = ops[op]
         rd  = (rd  & 0b11111)<<16
         rs1 = (rs1 & 0b11111)<<11
@@ -100,13 +94,14 @@ class Assembler:
             if not ((tokens := self.parse_and_split_line(line)) == -1):
                 if tokens[0] == "L:":
                     self.labels[tokens[1]] = self.pc
-                    if debug: print(f"label {tokens[1]} at {self.pc}")
+                    if debug: print(f"\tDEBUG: label {tokens[1]} at {self.pc}")
                 else:
                     self.pc += 1
+        self.pc = 0
 
 
     def assemble_line(self, line):
-        if debug: print(line)
+        if debug: print(f"\t\tDEBUG PC {self.pc+1}: " + line)
 
         if (tokens := self.parse_and_split_line(line)) == -1: return -1
 
@@ -152,6 +147,7 @@ class Assembler:
         # immRD
         elif tokens[0] == "j":
             if tokens[1].startswith("L"):
+                if debug: print(f"\tDEBUG: jump to label {tokens[1][1:]} at {self.pc} offset {self.labels[tokens[1][1:]]-self.pc}")
                 return self.instruction("j", imm=self.labels[tokens[1][1:]]-self.pc, immRD=True)
             return self.instruction("j", imm=tokens[1], immRD=True)
 
@@ -162,7 +158,7 @@ class Assembler:
         # rs1, rs2, immRD
         elif tokens[0] in ["beq", "bne", "blt", "bgt", "bge", "ble"]:
             if tokens[3].startswith("L"):
-                if debug: print(f"branch to label {tokens[3][1:]} at {self.pc} offset {self.labels[tokens[3][1:]]-self.pc}")
+                if debug: print(f"\tDEBUG: branch to label {tokens[3][1:]} at {self.pc} offset {self.labels[tokens[3][1:]]-self.pc}")
                 return self.instruction(tokens[0], rs1=tokens[1], rs2=tokens[2], imm=self.labels[tokens[3][1:]]-self.pc, immRD=True)
             return self.instruction(tokens[0], rs1=tokens[1], rs2=tokens[2], imm=tokens[3], immRD=True)
 

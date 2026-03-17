@@ -19,25 +19,19 @@ push constant 1
 push constant 1
 push constant 1
 add
-pop temp 0
-pop temp 1
-push temp 0
-push temp 1
-push temp 0
-add
 
-pop temp 0
-pop temp 1
-push temp 0
-push temp 1
-push temp 0
-add
-
-pop temp 0
-pop temp 1
-push temp 0
-push temp 1
-push temp 0
-add
-
+label ADDTWO
 pop result 0
+push result 0
+push constant 20
+gt
+if-goto END
+push result 0
+pop temp 0
+pop temp 1
+push temp 0
+push temp 1
+push temp 0
+add
+goto ADDTWO
+label END
