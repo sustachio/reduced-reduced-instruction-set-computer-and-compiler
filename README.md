@@ -1,5 +1,7 @@
 This is a processor I created so that I can follow along with some of the concepts in `Computer Architecture: A Quantitative Approach` by John Hennessy and David Patterson. I have also put together a simple ISA (described in `ISA attempt rriscv.xlsx`) and assembler, VM Byte language, and higher level language to go along with it.
 
+The processor was created in `Logisim` and is in the `rrisc` subcircuit of the `adders.circ` file (this was just a file I had been using for a long time, anything before the `rrisc` subcircuit was not a part of this project).
+
  The stack based VM byte code was based on the one in the `nand2tetris` series but with a different hardware level implementation and memory layout (as the hardware and assembler was developed independently of the series). A custom object oriented higher level language which I have called `rubellite` (cheap version of rubies, lightly based off the `ruby` language), which will compile down to the bytecode language has also been developed. I has always wanted to write a full compiler with tokenization, parsing, ASTs, assembly code, machine code, etc. and needing some code to test the processor with was a good excuse to develop one. 
 
 ## Processor/assembler features:
