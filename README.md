@@ -9,7 +9,8 @@ The processor was created in `Logisim` and is in the `rrisc` subcircuit of the `
 - 32 bit
 - 5 stage pipeline (IF, ID, EX, MEM, WB)
 - 32 registers
-- 32 implemented opcodes (up to 64)
+- 28 implemented opcodes (up to 64)
+- 4 instruction formats
 - Register forwarding/bypassing
 
 Descriptions of op-codes and registers can be found in `ISA attempt rriscv.xlsx`. There are only two types of instrucions, being the one listed in that spreadsheet and one which merges the imm and rd fields into an immRD field which is just a longer immediate (this is subject to change, I will probably add more).
@@ -48,3 +49,5 @@ Updte #4: added `function`, `call`, and `return` along with logic for the call s
 Update #5: This took a lot longer than expected but I have began writing my own Object Oriented language to compile down to the bytecode language. Its syntax is very vaguely based on `ruby` and I have it called `rubellite` (a gem which is known as a cheaper version of a ruby) with the file extension `rbl`. So far I have defined the grammer (currently LL(3)), created a tokenizer and parser which gets it to an AST and am going to began working on the compiler. The choice to go with an Object Oriented language was made as the VM I put together based on the one from the `nand2tetris` project is only really designed to be able to push one value onto the stack at the time, so any implementation of structs would just be working on pointers to structs, and at that point there's really no reason not to just have objects. This will also allow me to base the OS somewhat on the one from `nand2tetris` as they also use a custom object oriented language (although they skip AST generation which I found odd) and I have no prior experience with operating systems and some guidence would be nice. Also I renamed the `this` and `that` sections in the bytecode language to `ptr1` and `ptr2` as I found those to be more intuitive. Other minor hardware fixes.
 
 Update #6: Compiler is working!! (as far as I know) It can compile really big programs without throwing error and was able to create a successful n-th term fibonacci calculator with three nested functions (`System$Ini()`, `Main$main()`, `Main$fib(int amount)`) and a while loop.
+
+Update #7: Reworked the ISA to allow for 4 different instruction formats so I can have longer immediates.
