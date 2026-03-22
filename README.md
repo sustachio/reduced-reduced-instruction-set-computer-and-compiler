@@ -1,4 +1,6 @@
-This is a processor I created so that I can follow along with some of the concepts in `Computer Architecture: A Quantitative Approach` by John Hennessy and David Patterson. I have also put together a simple ISA (described in `ISA attempt rriscv.xlsx`) and assembler to go along with it. I have also written a stack based virtual machine compiler inspired by the one in the `nand2tetris` series but with a different hardware level implementation and memory layout. A custom object oriented higher level language called `rubellite` (cheap version of rubies, lightly based off the `ruby` language), which will compile down to the bytecode language, is currently in development (currently generating ASTs, working on final compiler).
+This is a processor I created so that I can follow along with some of the concepts in `Computer Architecture: A Quantitative Approach` by John Hennessy and David Patterson. I have also put together a simple ISA (described in `ISA attempt rriscv.xlsx`) and assembler, VM Byte language, and higher level language to go along with it.
+
+ The stack based VM byte code was based on the one in the `nand2tetris` series but with a different hardware level implementation and memory layout (as the hardware and assembler was developed independently of the series). A custom object oriented higher level language which I have called `rubellite` (cheap version of rubies, lightly based off the `ruby` language), which will compile down to the bytecode language has also been developed. I has always wanted to write a full compiler with tokenization, parsing, ASTs, assembly code, machine code, etc. and needing some code to test the processor with was a good excuse to develop one. 
 
 ## Processor/assembler features:
 
@@ -20,7 +22,7 @@ The assembler uses the same format for instruction parameters defined in the spr
 - Labels, conditional label jumps
 - Functions, calls, returns
 
-## Rubellite programming language features (in development):
+## Rubellite programming language features:
 
 - Classes
 - Fields, static, and local variables
@@ -28,6 +30,8 @@ The assembler uses the same format for instruction parameters defined in the spr
 - If (else) statements, while statements
 - Expression parseing (no order of operations yet though)
 - Comments
+
+_no AI generated code was used in this project as I enjoy my slightly poorly written code more_
 
 ## devlog
 

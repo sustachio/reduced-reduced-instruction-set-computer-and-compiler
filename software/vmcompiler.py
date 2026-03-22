@@ -16,7 +16,7 @@ ARG = 28
 PTR1 = 27
 PTR2 = 26
   
-class Parser():
+class VMParser():
     C_MATH     = 0
     C_PUSH     = 1
     C_POP      = 2
@@ -276,10 +276,9 @@ class CodeWritter:
 
 
 class VMTranslator:
-    def __init__(self, file):
-        with open(file) as f:
-            self.parser = Parser(f.readlines())
-            self.codewriter = CodeWritter()
+    def __init__(self, text_block):
+        self.parser = VMParser(text_block.split("\n"))
+        self.codewriter = CodeWritter()
 
     def translate(self):
         while self.parser.has_more_lines():
@@ -326,7 +325,7 @@ class VMTranslator:
             else:
                 print(f"\t"+i)
 
-        print("machine:")
+        print("Machine Code:")
         a = Assembler(self.codewriter.assembly_instructions)
         for i in a.assemble():
             print(i,end=" ")
@@ -340,7 +339,11 @@ class VMTranslator:
         return res
 
 if __name__ == "__main__":
-    a = VMTranslator("programs/vmtesting.vm")
+    text = ""
+    with open(file) as f:
+        text = f.read()
+
+    a = VMTranslator(text)
     a.translate()
     a.print_output()
 
