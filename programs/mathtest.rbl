@@ -1,0 +1,92 @@
+class System
+	staticdef int Init()
+		call Memory$Init();
+
+		return Main$main();
+	end
+end
+
+class Main
+	staticdef void main()
+		return Math$divide(16, 4);
+	end
+end
+
+class Math
+	staticdef int multiply(int a, int b)
+		local int acc, i, temp;
+
+		# attempt at optimization #1, A should have less 0 bits than B
+		if (a < 0) then
+			# attempt at optimization #2, if both are negative it is faster to multiply two positives
+			if (b < 0) then
+				let a = -a;
+				let b = -b;
+			else
+				let temp = a;
+				let a = b;
+				let b = temp;
+			end
+		end
+		
+		while (~(a == 0)) do
+			if ((a & 1) == 1) then
+				let acc = acc + b;
+			end
+			let b = b << 1;
+			let a = a >> 1;
+		end
+
+		return acc;
+	end
+
+	staticdef int divide(int num, int den)
+		local int i, x, result;
+
+		let i = 32;
+
+		while (i > 0) do
+			let i = i - 1;
+			
+			let result = result << 1;
+			let x = den << i;
+			if (~(num < x)) then
+				let num = num - x;
+				let result = result | 1;
+			end
+		end
+
+		return result;
+	end
+end
+	
+
+# TODO: add block free check
+# mem layout:
+# heapptr
+# ...
+# ... allocated mem
+# ...
+# block size
+# ...
+# ...
+# ...
+# block size
+# ADDR: 30000
+class Memory
+	static int heapptr;
+
+	staticdef int Init()
+		let $heapptr = 30000;
+	end
+
+	staticdef int alloc(int size)
+		local int newpos;
+
+		let $heapptr[0] = size;
+		let newpos = $heapptr - size;
+		let $heapptr = $heapptr - size - 1;
+
+		return newpos;
+	end
+end

@@ -154,6 +154,17 @@ class Tokenizer:
                 self.current_token_i += 1
                 return
 
+            if len(self.text_block) > 2 and self.text_block[0:3] == ">>>":
+                self.advance_char()
+                self.advance_char()
+                self.advance_char()
+
+                self.symbol = ">>>"
+                self.current_token = ">>>"
+                self.tokens.append(self.current_token)
+                self.current_token_i += 1
+                return
+
             if len(self.text_block) > 1 and self.text_block[0:2] == ">>":
                 self.advance_char()
                 self.advance_char()
@@ -170,17 +181,6 @@ class Tokenizer:
 
                 self.symbol = "<<"
                 self.current_token = "<<"
-                self.tokens.append(self.current_token)
-                self.current_token_i += 1
-                return
-
-            if len(self.text_block) > 2 and self.text_block[0:2] == ">>>":
-                self.advance_char()
-                self.advance_char()
-                self.advance_char()
-
-                self.symbol = ">>>"
-                self.current_token = ">>>"
                 self.tokens.append(self.current_token)
                 self.current_token_i += 1
                 return

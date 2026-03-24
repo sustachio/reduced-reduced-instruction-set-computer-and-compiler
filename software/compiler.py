@@ -175,6 +175,8 @@ class Compiler:
             self.compile_array_access(a)
         elif type(a) == ASTExpression:
             self.compile_expression(a)
+        elif type(a) == ASTUnaryOp:
+            self.compile_unary_op(a)
         else:
             raise Exception(f"COMPILER ERROR: compile_term called on non term '{str(a)}'")
 
@@ -411,7 +413,7 @@ class Compiler:
             self.add_bytecode("not")
 
 if __name__ == "__main__":
-    with open("programs/os.rbl") as f:
+    with open("programs/mathtest.rbl") as f:
         a = Compiler(f.read())
         print("VM code:")
         code = a.compile_program()
