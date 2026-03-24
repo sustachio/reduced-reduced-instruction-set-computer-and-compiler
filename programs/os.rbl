@@ -1,0 +1,60 @@
+class System
+	staticdef int Init()
+		call Memory$Init();
+
+		return Main$main();
+	end
+end
+
+class Main
+	staticdef void main()
+		local int x, y;
+		local int screen;
+
+		let screen = 30001;
+		
+		let x = 0;
+		while (x < 32) do
+			let y = 0;
+			while (y < 32) do
+				let screen[0] = $draw(x,y,  x,y,0);
+				let y = y + 1;
+			end
+			let x = x + 1;
+		end
+	end
+
+	staticdef void draw(int x, int y, int r, int g, int b)
+		return (r << 20) | (g << 15) | (b << 10) | (y << 5) | x;
+	end
+end
+
+# TODO: add block free check
+# mem layout:
+# heapptr
+# ...
+# ... allocated mem
+# ...
+# block size
+# ...
+# ...
+# ...
+# block size
+# ADDR: 30000
+class Memory
+	static int heapptr;
+
+	staticdef int Init()
+		let $heapptr = 30000;
+	end
+
+	staticdef int alloc(int size)
+		local int newpos;
+
+		let $heapptr[0] = size;
+		let newpos = $heapptr - size;
+		let $heapptr = $heapptr - size - 1;
+
+		return newpos;
+	end
+end
