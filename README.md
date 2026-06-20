@@ -44,8 +44,6 @@ The assembler uses the same format for instruction parameters defined in the spr
 - Comments
 - Basic heap management (will be improved)
 
-_no AI generated code was used in this project as I enjoy my slightly poorly written code more_
-
 ## devlog
 
 Update #1: Forwarding/bypassing has been added.
