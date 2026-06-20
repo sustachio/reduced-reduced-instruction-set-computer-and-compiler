@@ -44,6 +44,30 @@ The assembler uses the same format for instruction parameters defined in the spr
 - Comments
 - Basic heap management (will be improved)
 
+Here's a quick demo of the language with an (incomplete) memory class:
+
+```
+class Memory
+	static int heapptr;
+
+	staticdef int Init()
+		let $heapptr = 30000;
+	end
+
+	staticdef int alloc(int size)
+		local int newpos;
+
+		let $heapptr[0] = size;
+		let newpos = $heapptr - size;
+		let $heapptr = $heapptr - size - 1;
+
+		return newpos;
+	end
+end
+```
+
+As you can see the `$` is used to access static variables. If there was another class, it would be able to access the `$heapptr` variable with `Memory$heapptr`. Class fields could be accessed in the same way using a `.`. A full example of the syntax can be found in the `programs/langexample.rbl` file, do note that the actual program is non-functional and just serves to demonstrate the syntax.
+
 ## devlog
 
 Update #1: Forwarding/bypassing has been added.
